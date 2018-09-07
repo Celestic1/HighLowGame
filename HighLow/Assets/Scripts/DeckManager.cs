@@ -11,31 +11,37 @@ public class DeckManager : MonoBehaviour {
     int FirstCardValue, SecondCardValue, FirstCardSuit, SecondCardSuit;
     private Sprite cardsprite1, cardsprite2;
     public GameObject card1, card2;
-    public Text ValueText, SuitText;
+    public Text ValueText, SuitText;    
+    float speed = 0.1f; 
 
-
-    void placeCards()
-    {
-        card1.transform.position = CardPosition1.transform.position;
-        card2.transform.position = CardPosition2.transform.position;
-    }
 
 	// Use this for initialization
 	void Start () {
         ValueText.enabled = false;
         SuitText.enabled = false;
-        placeCards();
         checkDuplicateCard();
 	}
 
+    // Simulates drawing one card at a time and only check high or low when both cards are flipped.
     void Update()
     {
+        if (card1.transform.position != CardPosition1.transform.position)
+        {
+            card1.transform.position = new Vector3(card1.transform.position.x - speed, 0, 0);
+        }
+
+        if (card1.transform.position == CardPosition1.transform.position && card2.transform.position != CardPosition2.transform.position)
+        {
+            card2.transform.position = new Vector3(card2.transform.position.x - speed, 0, 0);
+        }
+
         if (card1.gameObject.GetComponent<CardFaces>().isFlipped && card2.gameObject.GetComponent<CardFaces>().isFlipped)
         {
             checkHighorLow();
         }
     }
 
+    // check if first card and second card are duplicates. And if they are, keep picking a new card until they are not dupliates.
     void checkDuplicateCard()
     {
         FirstCardValue = card1.gameObject.GetComponent<CardFaces>().value;
@@ -54,6 +60,7 @@ public class DeckManager : MonoBehaviour {
         }
     }
 
+    // checks each card's suit and value and changes text corresponding the rules of high or low.
     void checkHighorLow()
     {
         ValueText.enabled = true;
